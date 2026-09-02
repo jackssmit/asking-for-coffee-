@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>coffee? ☕</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Caveat:wght@600;700&display=swap');
+
+  :root{
+    --cream:#fff8f0;
+    --latte:#f3d9b1;
+    --mocha:#7a4b2e;
+    --blush:#ff8fa3;
+    --blush-dark:#ef5e79;
+    --gold:#ffb84d;
+    --plum:#4a3226;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    font-family:'Quicksand', sans-serif;
+    background: radial-gradient(circle at 30% 15%, #fff3e2 0%, var(--cream) 45%, #ffe9d6 100%);
+    color:var(--plum);
+  }
+
+  #hearts{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .float-heart{
+    position:absolute; bottom:-10%; opacity:.6;
+    animation: rise linear infinite;
+  }
+  @keyframes rise{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.7; }
+    100%{ transform:translateY(-115vh) translateX(var(--drift,20px)) rotate(360deg); opacity:0; }
+  }
+
+  .stage{
+    position:relative; z-index:1; height:100vh; width:100vw;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+
+  .card{
+    position:relative; width:100%; max-width:390px;
+    background:#fffdfa; border-radius:28px;
+    padding:36px 26px 32px; text-align:center;
+    box-shadow: 0 20px 45px -15px rgba(239,94,121,0.3), 0 2px 8px rgba(74,50,38,0.08);
+    border:2px solid #ffe4c9;
+    animation: pop-in .55s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  @keyframes pop-in{
+    0%{ transform:scale(.7) translateY(20px); opacity:0; }
+    100%{ transform:scale(1) translateY(0); opacity:1; }
+  }
+
+  /* animated coffee cup */
+  .cup-wrap{ position:relative; height:90px; margin-bottom:4px; }
+  .cup{
+    font-size:56px; display:inline-block;
+    animation: wobble 2.2s ease-in-out infinite;
+  }
+  @keyframes wobble{
+    0%,100%{ transform:rotate(-5deg); }
+    50%{ transform:rotate(5deg); }
+  }
+  .steam{
+    position:absolute; top:-6px; font-size:20px; opacity:0;
+    animation: steam-rise 2.6s ease-in infinite;
+  }
+  .steam.s1{ left:44%; animation-delay:0s; }
+  .steam.s2{ left:56%; animation-delay:.9s; }
+  .steam.s3{ left:50%; animation-delay:1.8s; }
+  @keyframes steam-rise{
+    0%{ transform:translateY(0) scale(.7); opacity:0; }
+    25%{ opacity:.8; }
+    100%{ transform:translateY(-38px) scale(1.3); opacity:0; }
+  }
+
+  .eyebrow{ font-size:13px; letter-spacing:.3px; color:var(--blush-dark); font-weight:700; margin:0 0 4px; }
+  h1{ font-family:'Caveat', cursive; font-size:42px; line-height:1.05; margin:2px 0 10px; color:var(--mocha); }
+  p.sub{ font-size:15.5px; line-height:1.5; color:#8a6b52; margin:0 0 26px; font-weight:600; }
+
+  .btn-row{ position:relative; display:flex; gap:14px; justify-content:center; align-items:center; min-height:64px; }
+
+  button{
+    border:none; cursor:pointer; font-family:'Quicksand', sans-serif; font-weight:700;
+    border-radius:999px;
+    transition: transform .15s ease, box-shadow .2s ease, font-size .2s ease, padding .2s ease;
+  }
+
+  #yes{
+    background: linear-gradient(135deg, var(--gold), var(--blush-dark));
+    color:#fff; padding:14px 30px; font-size:17px;
+    box-shadow: 0 10px 20px -6px rgba(239,94,121,0.5);
+  }
+  #yes:active{ transform:scale(.94); }
+
+  #no{
+    background:#fff; color:#b58e6e; border:2px solid #f3ddc4;
+    padding:14px 26px; font-size:16px; position:relative;
+  }
+  #no.fixed-flee{ position:fixed; z-index:20; }
+
+  .hint{ margin-top:18px; font-size:12.5px; color:#c9a97e; font-weight:600; min-height:16px; }
+
+  .celebrate{ display:none; }
+  .celebrate.show{ display:block; animation: pop-in .5s cubic-bezier(.2,1.4,.4,1) both; }
+  .celebrate .cup-wrap{ height:100px; }
+  .celebrate .cup{ font-size:64px; animation: cheers 1s ease-in-out infinite; }
+  @keyframes cheers{
+    0%,100%{ transform: rotate(0deg) translateY(0); }
+    25%{ transform: rotate(-12deg) translateY(-4px); }
+    75%{ transform: rotate(12deg) translateY(-4px); }
+  }
+  .celebrate h1{ font-size:38px; }
+
+  .confetti{
+    position:fixed; top:-10px; z-index:30; width:10px; height:14px;
+    border-radius:3px; animation: fall linear forwards;
+  }
+  @keyframes fall{ to{ transform: translateY(110vh) rotate(540deg); opacity:.9; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .float-heart, .cup, .steam{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<div class="stage">
+  <div class="card" id="card">
+
+    <div id="ask">
+      <div class="cup-wrap">
+        <span class="steam s1">〰️</span>
+        <span class="steam s2">〰️</span>
+        <span class="steam s3">〰️</span>
+        <div class="cup">☕</div>
+      </div>
+      <p class="eyebrow">a very important question</p>
+      <h1>hey cutie...</h1>
+      <p class="sub">wanna grab coffee with me sometime? ☕💕</p>
+
+      <div class="btn-row">
+        <button id="yes" onclick="sayYes()">Yes please 🥰</button>
+        <button id="no" onclick="dodge()">No</button>
+      </div>
+
+      <div class="hint" id="hint">psst, only one of these buttons actually works</div>
+    </div>
+
+    <div class="celebrate" id="celebrate">
+      <div class="cup-wrap">
+        <span class="steam s1">〰️</span>
+        <span class="steam s2">〰️</span>
+        <div class="cup">☕🥳</div>
+      </div>
+      <p class="eyebrow">best decision ever</p>
+      <h1>yayyy, coffee date!</h1>
+      <p class="sub">okay now I'm grinning like an idiot 🙈 pick a day, I'm free literally always for you 🧡✨</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const heartsWrap = document.getElementById('hearts');
+const emojis = ['☕','💗','✨','🍩','🧡','💕','🌸'];
+for(let i=0;i<18;i++){
+  const h = document.createElement('div');
+  h.className='float-heart';
+  h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  h.style.left = Math.random()*100+'vw';
+  h.style.setProperty('--drift', (Math.random()*80-40)+'px');
+  h.style.animationDuration = (7+Math.random()*8)+'s';
+  h.style.animationDelay = (Math.random()*8)+'s';
+  h.style.fontSize = (14+Math.random()*16)+'px';
+  heartsWrap.appendChild(h);
+}
+
+const noBtn = document.getElementById('no');
+const yesBtn = document.getElementById('yes');
+const hint = document.getElementById('hint');
+
+const noTexts = [
+  "No","Nope","Nuh uh","Nice try","Not happening","Absolutely not","Try again","Never","Nah","Not a chance",
+  "Catch me","Still no","Missed me","Not today","Keep trying","Nope again","So close","Not even close","Denied","No way",
+  "Getting tired?","I'm quick","Nope :)","Not gonna happen","Zero chance","Still running","No sir","No ma'am","Persistent huh","Respect the hustle",
+  "Not falling for it","Nice attempt","Nope, sorry","Try harder","So determined","Not this time","No dice","Slippery","Can't catch me","Impressive effort though",
+  "Still saying no","Almost had me","Nope, fast","Wow, patient","Okay wow","Fine, still no","This is exhausting","Just say yes already","Seriously though","Okay you win",
+  "Fine, I give up"
+];
+let dodgeCount = 0;
+let yesScale = 1;
+const MAX_DODGES = 50;
+
+function dodge(){
+  dodgeCount++;
+
+  if(!noBtn.classList.contains('fixed-flee')){
+    const r = noBtn.getBoundingClientRect();
+    noBtn.style.left = r.left+'px';
+    noBtn.style.top = r.top+'px';
+    noBtn.classList.add('fixed-flee');
+  }
+
+  const btnW = noBtn.offsetWidth;
+  const btnH = noBtn.offsetHeight;
+  const margin = 12;
+  const maxX = window.innerWidth - btnW - margin;
+  const maxY = window.innerHeight - btnH - margin;
+
+  const newX = Math.max(margin, Math.random()*maxX);
+  const newY = Math.max(margin, Math.random()*maxY);
+  noBtn.style.left = newX+'px';
+  noBtn.style.top = newY+'px';
+
+  noBtn.textContent = noTexts[Math.min(dodgeCount-1, noTexts.length-1)];
+  const progress = Math.min(dodgeCount, MAX_DODGES) / MAX_DODGES;
+  const shrink = Math.max(0.45, 1 - progress*0.55);
+  noBtn.style.fontSize = (16*shrink)+'px';
+  noBtn.style.padding = (14*shrink)+'px '+(26*shrink)+'px';
+  noBtn.style.opacity = Math.max(0.3, 1 - progress*0.7);
+
+  yesScale = Math.min(1.7, 1 + progress*0.7);
+  yesBtn.style.fontSize = (17*yesScale)+'px';
+  yesBtn.style.padding = (14*yesScale)+'px '+(30*yesScale)+'px';
+
+  const hints = [
+    "psst, only one of these buttons actually works",
+    "aw come on, at least try to catch it 😂",
+    "it's getting shy, huh?",
+    "the no button is having a rough day",
+    "okay this is just embarrassing for the no button now",
+    "yes is literally right there 🥹",
+    "the no button has left the chat",
+    "we're really doing this huh",
+    "50 tries and counting 😭",
+    "at this point it's basically cardio",
+    "the no button is filing for retirement",
+    "okay you're just stubborn now, I respect it",
+    "yes button is getting kind of big ngl"
+  ];
+  hint.textContent = hints[Math.min(Math.floor(dodgeCount/4), hints.length-1)];
+
+  if(dodgeCount >= MAX_DODGES){
+    noBtn.style.pointerEvents = 'none';
+    noBtn.textContent = "okay fine, coffee it is ☕🥰";
+    noBtn.style.opacity = '0.3';
+  }
+}
+
+noBtn.addEventListener('mouseenter', ()=>{
+  if(window.matchMedia('(hover: hover)').matches){ dodge(); }
+});
+
+function sayYes(){
+  document.getElementById('ask').style.display='none';
+  document.getElementById('celebrate').classList.add('show');
+  burstConfetti();
+}
+
+function burstConfetti(){
+  const colors = ['#ff8fa3','#ffb84d','#c9a07a','#ffe066','#8fd9c9'];
+  for(let i=0;i<70;i++){
+    setTimeout(()=>{
+      const c = document.createElement('div');
+      c.className='confetti';
+      c.style.left = Math.random()*100+'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration = (2.2+Math.random()*1.8)+'s';
+      c.style.borderRadius = Math.random()>0.5 ? '50%' : '3px';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), 4200);
+    }, i*35);
+  }
+}
+</script>
+
+</body>
+</html>
